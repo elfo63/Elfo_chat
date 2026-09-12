@@ -571,8 +571,8 @@ function subscribeToMessages() {
 
                 console.log("پیام جدید:", payload);
 
-                const data = payload.new;
-alert(JSON.stringify(data));
+              console.log("FULL PAYLOAD:", payload);
+alert(JSON.stringify(payload));  
                 if (!data) {
                     return;
                 }
