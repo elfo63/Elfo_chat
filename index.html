@@ -807,11 +807,11 @@ async function joinChat() {
     "none";
 
     document
-.getElementById("chat")
-.style.display =
-"flex";
+    .getElementById("chat")
+    .style.display =
+    "flex";
 
-subscribeToMessages();
+    subscribeToMessages();
 }
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -820,13 +820,6 @@ const invitedRoom = urlParams.get("room");
 if (invitedRoom) {
     document.getElementById("roomCodeInput").value = invitedRoom;
 }
-const urlParams = new URLSearchParams(window.location.search);
-const invitedRoom = urlParams.get("room");
-
-if (invitedRoom) {
-    document.getElementById("roomCodeInput").value = invitedRoom;
-}
-
 /* بستن پنجره */
 
 function closeInvite() {
