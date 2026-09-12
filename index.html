@@ -554,55 +554,71 @@ if (memberError) {
     .style.display =
     "flex";
 }
-subscribeToMessages();
-  function subscribeToMessages() {
+function subscribeToMessages() {
 
-    supabaseClient
-    .channel("room-" + currentRoomId)
+    const channel =
+        supabaseClient
+        .channel("room-" + currentRoomId)
 
-    .on(
-        "postgres_changes",
-        {
-            event: "INSERT",
-            schema: "public",
-            table: "messages",
-            filter: "room_id=eq." + currentRoomId
-        },
-        (payload) => {
+        .on(
+            "postgres_changes",
+            {
+                event: "INSERT",
+                schema: "public",
+                table: "messages",
+            },
+            function (payload) {
 
-            const data = payload.new;
+                console.log("پیام جدید:", payload);
 
-            // پیام خودمان را دوباره نشان نده
-            if (data.nickname === myName) {
-                return;
+                const data = payload.new;
+alert(JSON.stringify(data));
+                if (!data) {
+                    return;
+                }
+
+                // پیام خودمان را دوباره نشان نده
+                if (data.nickname === myName) {
+                    return;
+                }
+
+                const messages =
+                    document.getElementById("messages");
+
+                const message =
+                    document.createElement("div");
+
+                message.className = "message";
+
+                const sender =
+                    document.createElement("div");
+
+                sender.className = "sender";
+
+                sender.textContent =
+                    data.nickname || "کاربر";
+
+                const content =
+                    document.createTextNode(
+                        data.content || ""
+                    );
+
+                message.appendChild(sender);
+                message.appendChild(content);
+
+                messages.appendChild(message);
+
+                messages.scrollTop =
+                    messages.scrollHeight;
             }
+        )
 
-            const messages =
-                document.getElementById("messages");
+        
+.subscribe(function (status) {
 
-            const message =
-                document.createElement("div");
+    alert("وضعیت اتصال: " + status);
 
-            message.className =
-                "message";
-
-            message.innerHTML =
-            `
-                <div class="sender">
-                    ${data.nickname}
-                </div>
-
-                ${data.content}
-            `;
-
-            messages.appendChild(message);
-
-            messages.scrollTop =
-                messages.scrollHeight;
-        }
-    )
-
-    .subscribe();
+});
 }
 
 /* ارسال پیام فعلاً محلی */
