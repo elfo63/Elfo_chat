@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>الفو چت</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Tahoma, sans-serif;
+    background: #10131a;
+    color: white;
+}
+
+.home {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.box {
+    width: 90%;
+    max-width: 420px;
+    background: #191e28;
+    padding: 30px;
+    border-radius: 25px;
+    text-align: center;
+}
+
+.logo {
+    width: 80px;
+    height: 80px;
+    margin: auto;
+    border-radius: 50%;
+    background: #6c5ce7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 27px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    margin: 20px 0 10px;
+    border: none;
+    border-radius: 12px;
+    background: #282f3b;
+    color: white;
+    font-size: 16px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.private {
+    background: #6c5ce7;
+    color: white;
+}
+
+.group {
+    background: #282f3b;
+    color: white;
+}
+
+.chat {
+    display: none;
+    height: 100vh;
+    flex-direction: column;
+}
+
+.chat-header {
+    background: #191e28;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #303642;
+}
+
+.room-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.small-logo {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #6c5ce7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.room-name {
+    font-weight: bold;
+}
+
+.members {
+    color: #9da4b2;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.invite {
+    background: #282f3b;
+    color: white;
+    width: auto;
+    padding: 10px 12px;
+    margin: 0;
+    font-size: 13px;
+}
+
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.message {
+    max-width: 75%;
+    padding: 11px 14px;
+    margin-bottom: 12px;
+    border-radius: 15px;
+    background: #282f3b;
+}
+
+.message.mine {
+    margin-right: auto;
+    background: #6c5ce7;
+}
+
+.sender {
+    font-size: 11px;
+    color: #bfc5d1;
+    margin-bottom: 5px;
+}
+
+.chat-input {
+    background: #191e28;
+    padding: 10px;
+    display: flex;
+    gap: 8px;
+}
+
+.chat-input input {
+    margin: 0;
+    flex: 1;
+}
+
+.send {
+    width: 55px;
+    margin: 0;
+    padding: 10px;
+    background: #6c5ce7;
+    color: white;
+}
+
+.invite-box {
+    display: none;
+    position: fixed;
+    left: 5%;
+    right: 5%;
+    bottom: 80px;
+    background: #191e28;
+    padding: 20px;
+    border-radius: 18px;
+    border: 1px solid #303642;
+}
+
+.invite-link {
+    background: #282f3b;
+    padding: 12px;
+    border-radius: 10px;
+    word-break: break-all;
+    font-size: 12px;
+    color: #bfc5d1;
+}
+
+.close {
+    background: transparent;
+    color: #aaa;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="home" id="home">
+
+    <div class="box">
+
+        <div class="logo">
+            الفو
+        </div>
+
+        <h1>الفو چت</h1>
+
+        <p>
+            چت خصوصی و گروهی بدون نیاز به شماره تلفن
+        </p>
+
+        <input
+            id="nickname"
+            placeholder="اسم یا نام کاربری"
+        >
+
+        <button
+            class="private"
+            onclick="createChat('private')">
+            💬 ساخت چت خصوصی
+        </button>
+
+        <button
+            class="group"
+            onclick="createChat('group')">
+            👥 ساخت گروه
+        </button>
+      
+      <input
+    id="roomCodeInput"
+    placeholder="کد اتاق را وارد کن"
+    style="text-transform: uppercase;"
+>
+
+<button
+    class="group"
+    onclick="joinChat()">
+    🔗 ورود به چت
+</button>
+
+    </div>
+
+</div>
+
+
+<div class="chat" id="chat">
+
+    <div class="chat-header">
+
+        <div class="room-info">
+
+            <div class="small-logo">
+                الفو
+            </div>
+
+            <div>
+
+                <div
+                    class="room-name"
+                    id="roomName">
+                    چت خصوصی
+                </div>
+
+                <div class="members">
+                    🟢 1 نفر آنلاین
+                </div>
+
+            </div>
+
+        </div>
+
+        <button
+            class="invite"
+            onclick="showInvite()">
+            🔗 دعوت
+        </button>
+
+    </div>
+
+
+    <div
+        class="messages"
+        id="messages">
+
+        <div class="message">
+
+            <div class="sender">
+                سیستم
+            </div>
+
+            👋 به الفو چت خوش آمدی!
+
+        </div>
+
+    </div>
+
+
+    <div class="chat-input">
+
+        <input
+            id="messageInput"
+            placeholder="پیامت رو بنویس..."
+            onkeydown="checkEnter(event)"
+        >
+
+        <button
+            class="send"
+            onclick="sendMessage()">
+            ➤
+        </button>
+
+    </div>
+
+</div>
+
+
+<div
+    class="invite-box"
+    id="inviteBox">
+
+    <h3>🔗 دعوت به اتاق</h3>
+
+    <p>
+        این لینک را برای دوستت بفرست:
+    </p>
+
+    <div
+        class="invite-link"
+        id="inviteLink">
+    </div>
+
+    <button
+        class="private"
+        onclick="copyInvite()">
+        📋 کپی لینک
+    </button>
+
+    <button
+        class="close"
+        onclick="closeInvite()">
+        بستن
+    </button>
+
+</div>
+
+
+<!-- کتابخانه Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL =
+"https://enotomcrxaltkkxeqfvb.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+"sb_publishable_vDUwLHosB8AlLClhH2vwOw_PDvZSQkO";
+
+const supabaseClient =
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+
+let myName = "";
+let roomCode = "";
+let currentRoomId = "";
+
+
+/* ورود بدون شماره تلفن */
+
+async function signInAnonymously() {
+
+    const { data, error } =
+        await supabaseClient.auth.signInAnonymously();
+
+    if (error) {
+
+        console.error(
+            "Anonymous login error:",
+            error
+        );
+
+        alert(
+            "خطا در ورود به سرور:\n" +
+            error.message
+        );
+
+        return false;
+    }
+
+    console.log(
+        "Anonymous user:",
+        data.user.id
+    );
+
+    return true;
+}
+
+
+/* ساخت کد اتاق */
+
+function generateCode() {
+
+    const chars =
+    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+    let code = "";
+
+    for (let i = 0; i < 6; i++) {
+
+        code += chars[
+            Math.floor(
+                Math.random() * chars.length
+            )
+        ];
+
+    }
+
+    return code;
+}
+
+
+/* ساخت چت واقعی */
+
+async function createChat(type) {
+
+    myName =
+        document
+        .getElementById("nickname")
+        .value
+        .trim();
+
+    if (myName === "") {
+
+        alert("اول یک اسم وارد کن 😄");
+
+        return;
+    }
+
+
+    const loggedIn =
+        await signInAnonymously();
+
+    if (!loggedIn) {
+
+        return;
+    }
+
+
+    roomCode = generateCode();
+
+
+    const { data, error } =
+        await supabaseClient
+        .from("rooms")
+        .insert([
+            {
+                code: roomCode,
+                type: type
+            }
+        ])
+        .select()
+        .single();
+
+
+    if (error) {
+
+        console.error(
+            "Room creation error:",
+            error
+        );
+
+        alert(
+            "ساخت اتاق با خطا مواجه شد:\n" +
+            error.message
+        );
+
+        return;
+    }
+
+
+    currentRoomId = data.id;
+
+  const { error: memberError } =
+    await supabaseClient
+    .from("members")
+    .insert([
+        {
+            room_id: currentRoomId,
+            nickname: myName
+        }
+    ]);
+
+if (memberError) {
+
+    console.error(
+        "Member error:",
+        memberError
+    );
+
+    alert(
+        "خطا در عضویت اتاق:\n" +
+        memberError.message
+    );
+
+    return;
+}
+
+
+    console.log(
+        "Room created:",
+        data
+    );
+
+
+    if (type === "group") {
+
+        document
+        .getElementById("roomName")
+        .innerText =
+        "گروه جدید";
+
+    } else {
+
+        document
+        .getElementById("roomName")
+        .innerText =
+        "چت خصوصی";
+    }
+
+
+    document
+    .getElementById("home")
+    .style.display =
+    "none";
+
+
+    document
+    .getElementById("chat")
+    .style.display =
+    "flex";
+}
+subscribeToMessages();
+  function subscribeToMessages() {
+
+    supabaseClient
+    .channel("room-" + currentRoomId)
+
+    .on(
+        "postgres_changes",
+        {
+            event: "INSERT",
+            schema: "public",
+            table: "messages",
+            filter: "room_id=eq." + currentRoomId
+        },
+        (payload) => {
+
+            const data = payload.new;
+
+            // پیام خودمان را دوباره نشان نده
+            if (data.nickname === myName) {
+                return;
+            }
+
+            const messages =
+                document.getElementById("messages");
+
+            const message =
+                document.createElement("div");
+
+            message.className =
+                "message";
+
+            message.innerHTML =
+            `
+                <div class="sender">
+                    ${data.nickname}
+                </div>
+
+                ${data.content}
+            `;
+
+            messages.appendChild(message);
+
+            messages.scrollTop =
+                messages.scrollHeight;
+        }
+    )
+
+    .subscribe();
+}
+
+/* ارسال پیام فعلاً محلی */
+async function sendMessage() {
+
+    const input =
+        document.getElementById("messageInput");
+
+    const text =
+        input.value.trim();
+
+    if (text === "") {
+        return;
+    }
+
+    const { data, error } =
+        await supabaseClient
+        .from("messages")
+        .insert([
+            {
+                room_id: currentRoomId,
+                nickname: myName,
+                content: text
+            }
+        ])
+        .select()
+        .single();
+
+    if (error) {
+
+        console.error("Message error:", error);
+
+        alert(
+            "خطا در ارسال پیام:\n" +
+            error.message
+        );
+
+        return;
+    }
+
+    const messages =
+        document.getElementById("messages");
+
+    const message =
+        document.createElement("div");
+
+    message.className =
+        "message mine";
+
+    message.innerHTML =
+    `
+        <div class="sender">
+            ${data.nickname}
+        </div>
+
+        ${data.content}
+    `;
+
+    messages.appendChild(message);
+
+    input.value = "";
+
+    messages.scrollTop =
+        messages.scrollHeight;
+}
+
+
+/* ارسال با Enter */
+
+function checkEnter(event) {
+
+    if (event.key === "Enter") {
+
+        sendMessage();
+
+    }
+
+}
+
+
+/* نمایش لینک دعوت */
+
+function showInvite() {
+
+    const link =
+        window.location.href.split("?")[0]
+        + "?room="
+        + roomCode;
+
+    document
+    .getElementById("inviteLink")
+    .innerText =
+    link;
+
+    document
+    .getElementById("inviteBox")
+    .style.display =
+    "block";
+}
+
+
+/* کپی لینک */
+
+function copyInvite() {
+
+    const link =
+        document
+        .getElementById("inviteLink")
+        .innerText;
+
+
+    navigator.clipboard
+    .writeText(link);
+
+
+    alert("لینک کپی شد 📋");
+}
+async function joinChat() {
+
+    myName =
+        document
+        .getElementById("nickname")
+        .value
+        .trim();
+
+    const code =
+        document
+        .getElementById("roomCodeInput")
+        .value
+        .trim()
+        .toUpperCase();
+
+    if (myName === "") {
+
+        alert("اول یک اسم وارد کن 😄");
+        return;
+    }
+
+    if (code === "") {
+
+        alert("کد اتاق را وارد کن");
+        return;
+    }
+
+    const loggedIn =
+        await signInAnonymously();
+
+    if (!loggedIn) {
+        return;
+    }
+
+    const { data: room, error } =
+        await supabaseClient
+        .from("rooms")
+        .select("*")
+        .eq("code", code)
+        .single();
+
+    if (error) {
+
+        alert(
+            "اتاق پیدا نشد:\n" +
+            error.message
+        );
+
+        return;
+    }
+
+    currentRoomId = room.id;
+    roomCode = room.code;
+
+    const { error: memberError } =
+        await supabaseClient
+        .from("members")
+        .insert([
+            {
+                room_id: currentRoomId,
+                nickname: myName
+            }
+        ]);
+
+    if (memberError) {
+
+        alert(
+            "خطا در ورود به اتاق:\n" +
+            memberError.message
+        );
+
+        return;
+    }
+
+    document
+    .getElementById("roomName")
+    .innerText =
+    room.type === "group"
+        ? "گروه"
+        : "چت خصوصی";
+
+    document
+    .getElementById("home")
+    .style.display =
+    "none";
+
+    document
+    .getElementById("chat")
+    .style.display =
+    "flex";
+
+    subscribeToMessages();
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+const invitedRoom = urlParams.get("room");
+
+if (invitedRoom) {
+    document.getElementById("roomCodeInput").value = invitedRoom;
+}
+/* بستن پنجره */
+
+function closeInvite() {
+
+    document
+    .getElementById("inviteBox")
+    .style.display =
+    "none";
+}
+
+</script>
+
+</body>
+</html>
